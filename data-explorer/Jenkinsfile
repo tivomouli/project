@@ -1,0 +1,106 @@
+pipeline {
+
+    environment { 
+        JAVA_HOME = '/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.282.b08-1.el7_9.x86_64/jre'
+        M2_HOME = '/opt/apache-maven-3.5.4'
+        SERVER_ID = 'JFrog'
+    }
+
+    agent {
+        node {
+            label 'datamill'
+        }
+    }
+    stages {
+
+        stage ('Start') {
+            steps {
+                slackSend channel: 'pre-prod-jenkins-alerts', color: 'good', message: "Started : \n Job Name - ${env.JOB_NAME} \n Branch- ${env.BRANCH_NAME} \n Build_number- ${currentBuild.displayName} ", tokenCredentialId: 'slack-token'
+        }
+        }
+
+
+        stage ('Build Number Generation') {
+            steps {
+                script {
+
+                    def job = build job: 'TMDB-BulkUpload-Service-BuildNumber-Job', quietPeriod: 0, parameters: [string(value: "${env.BUILD_NUMBER}", name: 'UID')]
+                    def BNUMBER = job.getNumber().toString()
+                    def buldnumber = "${BRANCH_NAME}" + "-" + "4.3." + "${BNUMBER}"
+                    VERSION_NUMBER = VersionNumber(versionNumberString: '${buldnumber}')
+                    currentBuild.displayName = "${buldnumber}"
+
+                    echo "${buldnumber}"
+                    echo "${VERSION_NUMBER}"
+
+                    
+                }              
+            }             
+        }
+
+        stage('Scan and Maven Build') {
+            steps {                
+//                sh "export JAVA_HOME=$JAVA_HOME"
+                sh "export M2_HOME=$M2_HOME"
+                sh "$M2_HOME/bin/mvn -f pom.xml clean package -DskipTests"
+
+            }
+        }
+
+
+        stage ('Upload') {
+            steps {
+                script {
+                    def target_path_jfrog = "TMDB-Bulk-Edit-Service/TMDB-Bulk-Edit-Service-" + "-" + currentBuild.displayName + "/"
+                    echo "${target_path_jfrog}"
+                    rtUpload (
+                    buildName: JOB_NAME,
+                    buildNumber: currentBuild.displayName,
+                    serverId: SERVER_ID, // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
+                    spec: """{
+                              "files": [
+                                 {
+                                  "pattern": "$WORKSPACE/target/*.zip",
+                                  "target": "${target_path_jfrog}",
+                                  "recursive": "false"
+                                } 
+                             ]
+                        }"""   
+                    )
+                }
+
+            }
+        }
+
+
+        stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    buildName: JOB_NAME,
+                    buildNumber: BUILD_NUMBER,
+                    serverId: SERVER_ID
+                )
+            }
+        }
+
+         stage ('Removing files') {
+            steps {
+                sh 'rm -rf $WORKSPACE/*'
+            }
+        }         
+
+    }
+
+  post {
+        success {
+
+            slackSend channel: 'pre-prod-jenkins-alerts', color: 'good', message: "Successfull : \n Job Name - ${env.JOB_NAME} \n Branch- ${env.BRANCH_NAME} \n Build_number- ${currentBuild.displayName} \n ", tokenCredentialId: 'slack-token'
+        }
+
+        failure {
+            slackSend channel: 'pre-prod-jenkins-alerts', color: 'danger', message: "failed : \n Job Name - ${env.JOB_NAME} \n Branch- ${env.BRANCH_NAME} \n Build_number- ${currentBuild.displayName} \n", tokenCredentialId: 'slack-token'
+
+        }
+  }
+
+}

@@ -1,0 +1,166 @@
+#!/bin/sh
+#
+# See "man chkconfig" for information on the next two lines (Red Hat only)
+# chkconfig: 235 80 20
+# description: DataMill service REST server
+#
+# Following lines are in conformance with LSB 1.2 spec
+### BEGIN INIT INFO
+# Provides:          tmdb-bulk-upload-services
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Micro services for KG Matching tmdb-bulk-upload-services
+# Description:       Micro services for KG Matching tmdb-bulk-upload-services
+### END INIT INFO
+
+# Use the lsb functions to perform the operations
+. /etc/init.d/functions || exit 1
+
+# Process name
+NAME=${project.name}
+VERSION=${project.version}
+
+# Config
+if [ -f /etc/sysconfig/${NAME} ] ; then
+ . /etc/sysconfig/${NAME}
+fi
+
+[ -n "${RICH_MEDIA_SPRING_CONFIG}" ] && export RICH_MEDIA_SPRING_CONFIG
+[ -n "${RICH_MEDIA_PROPERTIES}" ] && export RICH_MEDIA_PROPERTIES
+
+if [ `hostname | cut -c 7-8` == "pd" ]; then
+ USERENV=""
+else
+ USERENV="-pp"
+fi
+[ -z "${APPUSER}" ] && APPUSER=mdappuser${USERENV}
+[ -z "${ROVI_BASE}" ] && ROVI_BASE=/opt/rovi
+
+LOGBACK_OPTS="-Dlogging.config=${ROVI_BASE}/${NAME}/conf/logback.xml"
+IP_OPTS="-Djava.net.preferIPv4Stack=true"
+
+# Daemon name, which is the actual executable
+DAEMON=`which java`
+
+# pid file for the daemon
+PIDFILE=${ROVI_BASE}/run/${NAME}.pid
+
+# If the daemon is not there, then exit.
+test -x ${DAEMON} || exit 5
+
+log_failure_msg() {
+ echo -n $*
+ failure "$*"
+ echo
+}
+
+log_success_msg() {
+ echo -n $*
+ success "$*"
+ echo
+}
+
+log_warning_msg() {
+ echo -n $*
+ warning "$*"
+ echo
+}
+
+case $1 in
+ start)
+  # Check the PID file exists and check the actual status of process
+  if [ -e $PIDFILE ]; then
+   pidofproc -p $PIDFILE $DAEMON
+   RETVAL=$?
+   # If the status is SUCCESS then don't need to start again.
+   if [ $RETVAL -eq 0 ]; then
+    exit 0 # Exit
+   fi
+  fi
+  # Start the daemon (N.B. we intentionally do not reset the environment)
+  shift
+  su ${APPUSER} -c "'${DAEMON}' '${IP_OPTS}' '${LOGBACK_OPTS}' -jar '${ROVI_BASE}'/'${NAME}'/app/'${NAME}'-'${VERSION}'.jar --spring.config.location=file://'${ROVI_BASE}'/'${NAME}'/conf/application.properties '$*' >> '${ROVI_BASE}'/log/'${NAME}'-output.log 2>&1 &"'
+                      echo "$!"' >${PIDFILE}
+  RETVAL=$?
+  #PID=$!
+  echo "RETVAL ${RETVAL} PID `cat ${PIDFILE}`"
+  if [ $RETVAL -ne 0 ]; then
+   log_failure_msg "Starting $NAME"
+   exit $RETVAL
+  fi
+  #echo "$PID" >$PIDFILE
+  # Check on it
+  sleep 4
+  PID=`pidofproc -p $PIDFILE $DAEMON`
+  RETVAL=$?
+  if [ $RETVAL -eq 0 ]; then
+   log_success_msg "Starting $NAME ($PID)"
+  else
+   log_failure_msg "Starting $NAME"
+   /bin/rm -f $PIDFILE
+  fi
+  exit $RETVAL
+  ;;
+ stop)
+  # Stop the daemon
+  if [ -e $PIDFILE ]; then
+   PID=`pidofproc -p $PIDFILE $DAEMON`
+   RETVAL=$?
+   if [ $RETVAL -eq 0 ]; then
+    if killproc -p $PIDFILE -d 300 $DAEMON ; then
+     log_success_msg "Stopping $NAME ($PID)"
+    else
+     log_failure_msg "Stopping $NAME ($PID)"
+    fi
+    /bin/rm -f $PIDFILE
+   fi
+  else
+   log_warning_msg "$NAME is not running"
+  fi
+  ;;
+ restart|force-restart)
+  # Restart the daemon
+  $0 stop && sleep 2 && $0 start
+  ;;
+ status)
+  # Check the status of the process
+  if [ -e $PIDFILE ]; then
+   PID=`pidofproc -p $PIDFILE $DAEMON`
+   RETVAL=$?
+   if [ $RETVAL -eq 0 ]; then
+    log_success_msg "$NAME is running ($PID)"
+   else
+    log_success_msg "$NAME is not running ($PID)"
+   fi
+  else
+   log_success_msg "$NAME is not running (no pid file)"
+  fi
+  ;;
+ reload)
+  # Reload the process. Basically sending some signal to a daemon to reload
+  # it configurations.
+  if [ -e $PIDFILE ]; then
+   killproc -p $PIDFILE $DAEMON -SIGUSR1
+   log_success_msg "$NAME reload"
+  else
+   log_failure_msg "$NAME reload"
+  fi
+  ;;
+ dump)
+  # Dump thread info
+  if [ -e $PIDFILE ]; then
+   # /bin/sh does not recognize -SIGQUIT
+   killproc -p $PIDFILE $DAEMON -3
+   log_success_msg "$NAME dump"
+  else
+   log_failure_msg "$NAME dump"
+  fi
+  ;;
+ *)
+  # For invalid arguments, print the usage message
+  echo "Usage: $0 {start|stop|restart|force-restart|reload|status|dump}"
+  exit 2
+  ;;
+esac

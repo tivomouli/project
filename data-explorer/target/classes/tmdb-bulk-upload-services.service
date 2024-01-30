@@ -1,0 +1,14 @@
+[Unit] 
+Description=TMDB Bulk upload application database APIs
+After=network.target 
+ 
+[Service] 
+User=mdappuser-pp 
+ExecStart=/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/rovi/log/${project.name} -jar /opt/rovi/${project.name}/app/${project.name}-${project.version}.jar --spring.config.location=file:///opt/rovi/${project.name}/conf/application.properties
+SuccessExitStatus=143
+PIDFile=/opt/rovi/run/${project.name}.pid 
+Restart=always 
+RestartSec=2 
+ 
+[Install] 
+WantedBy=default.target 

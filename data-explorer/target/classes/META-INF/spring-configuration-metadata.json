@@ -1,0 +1,243 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.rovicorp.datamill.config.DataMillDBConfig",
+      "name": "datamill.datasource",
+      "sourceMethod": "dataMillDataSource()",
+      "type": "javax.sql.DataSource"
+    }
+  ],
+  "properties": [
+    {
+      "name": "acquisition.watch.dir",
+      "description": "A description for 'acquisition.watch.dir'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "acquisition.watch.subdir",
+      "description": "A description for 'acquisition.watch.subdir'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "acquistion.base.dir",
+      "description": "A description for 'acquistion.base.dir'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "daq.client.base_uri",
+      "description": "A description for 'daq.client.base_uri'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.alert.file.not.received.daily.buffer.time",
+      "description": "A description for 'datamill.alert.file.not.received.daily.buffer.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.alert.file.not.received.hourly.buffer.time",
+      "description": "A description for 'datamill.alert.file.not.received.hourly.buffer.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.alert.file.not.received.time.slots",
+      "description": "A description for 'datamill.alert.file.not.received.time.slots'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.alert.lock.expire.time",
+      "description": "A description for 'datamill.alert.lock.expire.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.driver-class-name",
+      "description": "A description for 'datamill.datasource.driver-class-name'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.name",
+      "description": "A description for 'datamill.datasource.name'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.password",
+      "description": "A description for 'datamill.datasource.password'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.test-on-borrow",
+      "description": "A description for 'datamill.datasource.test-on-borrow'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.url",
+      "description": "A description for 'datamill.datasource.url'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.username",
+      "description": "A description for 'datamill.datasource.username'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.datasource.validation-query",
+      "description": "A description for 'datamill.datasource.validation-query'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.db.sqlserver.name",
+      "description": "A description for 'datamill.db.sqlserver.name'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.file.lock.expire.time",
+      "description": "A description for 'datamill.file.lock.expire.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.file.process.time",
+      "description": "A description for 'datamill.file.process.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.file.transfer.lock.expire.time",
+      "description": "A description for 'datamill.file.transfer.lock.expire.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.program.process.expire.time",
+      "description": "A description for 'datamill.program.process.expire.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "datamill.source.lock.expire.time",
+      "description": "A description for 'datamill.source.lock.expire.time'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "db.nt.lan.domain",
+      "description": "A description for 'db.nt.lan.domain'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "db.nt.lan.manager",
+      "description": "A description for 'db.nt.lan.manager'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "dictionary.french.dump",
+      "description": "A description for 'dictionary.french.dump'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "dump.request.body",
+      "description": "A description for 'dump.request.body'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "filetransfer.destinationlocation",
+      "description": "A description for 'filetransfer.destinationlocation'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "filetransfer.sourcelocation.lux",
+      "description": "A description for 'filetransfer.sourcelocation.lux'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "filetransfer.sourcelocation.tul",
+      "description": "A description for 'filetransfer.sourcelocation.tul'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "filetransfer.sourcelocation.tul2",
+      "description": "A description for 'filetransfer.sourcelocation.tul2'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "gapfill.schedule.days",
+      "description": "A description for 'gapfill.schedule.days'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rabbitmq.host",
+      "description": "A description for 'rabbitmq.host'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rabbitmq.password",
+      "description": "A description for 'rabbitmq.password'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rabbitmq.queue_name",
+      "description": "A description for 'rabbitmq.queue_name'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rabbitmq.user",
+      "description": "A description for 'rabbitmq.user'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rabbitmq.vhost",
+      "description": "A description for 'rabbitmq.vhost'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "schedule.client.base_uri",
+      "description": "A description for 'schedule.client.base_uri'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "schedule.interval.default",
+      "description": "A description for 'schedule.interval.default'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "schedule.interval.defaultValue",
+      "description": "A description for 'schedule.interval.defaultValue'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "schedule.reprocessing.interval",
+      "description": "A description for 'schedule.reprocessing.interval'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "server.hostname",
+      "description": "A description for 'server.hostname'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "sftp.address",
+      "description": "A description for 'sftp.address'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "sftp.key",
+      "description": "A description for 'sftp.key'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "sftp.location",
+      "description": "A description for 'sftp.location'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "sftp.user",
+      "description": "A description for 'sftp.user'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "watch.dir",
+      "description": "A description for 'watch.dir'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "watch.subdir",
+      "description": "A description for 'watch.subdir'",
+      "type": "java.lang.String"
+    }
+  ]
+}
